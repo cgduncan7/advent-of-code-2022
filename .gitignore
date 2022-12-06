@@ -1,0 +1,6 @@
+# Rust stuffs
+**/target/
+
+# AoC stuffs
+data.txt
+example.txt

@@ -1,14 +1,7 @@
-use std::path::Path;
+use std::str::Lines;
 use harness;
 
-fn part1(path: &Path) -> i32 {
-    let input = match harness::get_input(path) {
-        Ok(i) => i,
-        Err(_) => panic!("Failed to get input"),
-    };
-    
-    let lines = input.lines();
-
+fn part1(lines: &mut Lines) -> i32 {
     let mut current = 0;
     let mut max = std::i32::MIN;
     for line in lines {
@@ -26,14 +19,7 @@ fn part1(path: &Path) -> i32 {
     max
 }
 
-fn part2(path: &Path) -> i32 {
-    let input = match harness::get_input(path) {
-        Ok(i) => i,
-        Err(_) => panic!("Failed to get input"),
-    };
-    
-    let lines = input.lines();
-
+fn part2(lines: &mut Lines) -> i32 {
     let mut current = 0;
     let mut top_three = [std::i32::MIN, std::i32::MIN, std::i32::MIN];
     for line in lines {
@@ -58,7 +44,7 @@ fn part2(path: &Path) -> i32 {
 }
 
 fn main() {
-    harness::time_function(Path::new("example.txt"), &part1);
-    harness::time_function(Path::new("data.txt"), &part1);
-    harness::time_function(Path::new("data.txt"), &part2);
+    harness::time_function("example.txt", &part1);
+    harness::time_function("data.txt", &part1);
+    harness::time_function("data.txt", &part2);
 }

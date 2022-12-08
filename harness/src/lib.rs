@@ -1,4 +1,4 @@
-use std::{path::Path, fs::File, io, io::{BufReader, Read}, time::{Instant}};
+use std::{path::Path, fs::File, io, io::{BufReader, Read}, time::{Instant}, str::Lines};
 
 pub fn get_input(path: &Path) -> io::Result<String> {
     let file = File::open(path)?;
@@ -8,9 +8,14 @@ pub fn get_input(path: &Path) -> io::Result<String> {
     Ok(buff)
 }
 
-pub fn time_function(path: &Path, f: &dyn Fn(&Path) -> i32) {
+pub fn time_function<T: std::fmt::Display>(path: &str, f: &dyn Fn(&mut Lines) -> T) {
     let start_time = Instant::now();
-    let result = f(path);
+    let str = match get_input(Path::new(path)) {
+        Ok(s) => s,
+        Err(_) => panic!("Error getting input"),
+    };
+    let mut lines = str.lines();
+    let result = f(&mut lines);
     let elapsed_time = start_time.elapsed();
     println!("\nResult:\t\t{}\nDuration:\t{:?}", result, elapsed_time);
 }

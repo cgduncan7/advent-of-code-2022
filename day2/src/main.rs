@@ -1,4 +1,4 @@
-use std::{path::Path, cmp::Ordering, str::Lines};
+use std::{cmp::Ordering, str::Lines};
 use harness;
 
 enum Result {

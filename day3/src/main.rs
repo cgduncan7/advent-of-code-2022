@@ -37,7 +37,6 @@ fn part1(lines: &mut Lines) -> u32 {
 
 fn part2(lines: &mut Lines) -> u32 {
     let mut total_priority = 0;
-    let mut cnt = true;
 
     while let Some(first_elf) = lines.next() {
         let second_elf = lines.next().unwrap();

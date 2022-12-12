@@ -14,15 +14,14 @@ enum ItemType {
 #[derive(Debug)]
 struct Item {
     name: String,
-    item_type: ItemType,
     size: RefCell<u32>,
     parent: Option<Weak<Item>>,
     children: RefCell<Vec<Rc<Item>>>,
 }
 
 impl Item {
-    fn new(name: &str, item_type: ItemType, size: RefCell<u32>, parent: Option<Weak<Item>>) -> Item {
-        Item { name: name.to_string(), item_type, size, parent, children: RefCell::new(vec![]) }
+    fn new(name: &str, size: RefCell<u32>, parent: Option<Weak<Item>>) -> Item {
+        Item { name: name.to_string(), size, parent, children: RefCell::new(vec![]) }
     }
 
     fn update_size(&self, size: u32) {
@@ -57,7 +56,7 @@ impl Item {
 
 fn part1(lines: &mut Lines) -> u32 {
     let mut directories: Vec<Weak<Item>> = vec![];
-    let root_item = Rc::new(Item::new("/", ItemType::Directory, RefCell::new(0), None));
+    let root_item = Rc::new(Item::new("/", RefCell::new(0), None));
     directories.push(Rc::downgrade(&root_item));
     
     let mut current_item = Rc::clone(&root_item);
@@ -99,7 +98,7 @@ fn part1(lines: &mut Lines) -> u32 {
             };
 
             // parse files
-            let new_item = Item::new(name, item_type, RefCell::new(size), Some(Rc::downgrade(&current_item)));
+            let new_item = Item::new(name, RefCell::new(size), Some(Rc::downgrade(&current_item)));
             let rc_new_item = Rc::new(new_item);
             
             match item_type {
@@ -125,7 +124,7 @@ fn part1(lines: &mut Lines) -> u32 {
 
 fn part2(lines: &mut Lines) -> u32 {
     let mut directories: Vec<Weak<Item>> = vec![];
-    let root_item = Rc::new(Item::new("/", ItemType::Directory, RefCell::new(0), None));
+    let root_item = Rc::new(Item::new("/", RefCell::new(0), None));
     directories.push(Rc::downgrade(&root_item));
     
     let mut current_item = Rc::clone(&root_item);
@@ -167,7 +166,7 @@ fn part2(lines: &mut Lines) -> u32 {
             };
 
             // parse files
-            let new_item = Item::new(name, item_type, RefCell::new(size), Some(Rc::downgrade(&current_item)));
+            let new_item = Item::new(name, RefCell::new(size), Some(Rc::downgrade(&current_item)));
             let rc_new_item = Rc::new(new_item);
             
             match item_type {

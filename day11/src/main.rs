@@ -1,4 +1,4 @@
-use std::{str::Lines, cell::RefCell, borrow::BorrowMut};
+use std::{str::Lines, cell::RefCell, borrow::{BorrowMut, Borrow}, rc::Rc, ops::MulAssign};
 use harness;
 
 fn add(lhs: usize, rhs: usize) -> usize {
@@ -94,7 +94,7 @@ impl Monkey {
         index
     }
 
-    fn take_turn(&mut self, reduce_worry: bool) -> Option<Movement> {
+    fn take_turn(&mut self, reduce_worry: bool, max_required_worry: usize) -> Option<Movement> {
         if self.items.borrow().len() == 0 {
             return None;
         }
@@ -103,6 +103,9 @@ impl Monkey {
         if reduce_worry {
             new_item /= 3;
         }
+
+        new_item %= max_required_worry;
+
         self.num_inspections += 1;
         let target_monkey_index: usize;
         if (self.test)(new_item) {
@@ -114,11 +117,11 @@ impl Monkey {
         Some(Movement { target_index: target_monkey_index, item: new_item })
     }
 
-    fn take_turns(&mut self, reduce_worry: bool) -> Vec<Movement> {
+    fn take_turns(&mut self, reduce_worry: bool, max_required_worry: usize) -> Vec<Movement> {
         let mut movements = Vec::new();
         let mut cnt = true;
         while cnt {
-            match self.take_turn(reduce_worry) {
+            match self.take_turn(reduce_worry, max_required_worry) {
                 Some(m) => movements.push(m),
                 None => cnt = false,
             };
@@ -130,6 +133,7 @@ impl Monkey {
 
 fn part1(lines: &mut Lines) -> usize {
     let mut monkeys: Vec<Monkey> = Vec::new();
+    let mut max_required_worry = 1;
     loop {
         let mut it = lines.take(7);
         if it.next().is_none() {
@@ -138,6 +142,7 @@ fn part1(lines: &mut Lines) -> usize {
         let items = it.next().unwrap();
         let operation = it.next().unwrap();
         let test = it.next().unwrap();
+        max_required_worry.mul_assign(usize::from_str_radix(test.clone().split(" ").last().unwrap(), 10).unwrap());
         let target_true = it.next().unwrap();
         let target_false = it.next().unwrap();
         it.next();
@@ -149,7 +154,7 @@ fn part1(lines: &mut Lines) -> usize {
     for _ in 0..20 {
         for i in 0..monkeys.len() {
             let m = monkeys.get_mut(i).unwrap();
-            let movements = m.take_turns(true);
+            let movements = m.take_turns(true, max_required_worry);
             for movement in movements.iter() {
                 monkeys.get(movement.target_index).borrow_mut().unwrap().items.borrow_mut().push(movement.item);
             }
@@ -164,6 +169,8 @@ fn part1(lines: &mut Lines) -> usize {
 
 fn part2(lines: &mut Lines) -> usize {
     let mut monkeys: Vec<Monkey> = Vec::new();
+    // calculate LCM to limit my anxiety
+    let mut max_required_worry = 1;
     loop {
         let mut it = lines.take(7);
         if it.next().is_none() {
@@ -172,6 +179,7 @@ fn part2(lines: &mut Lines) -> usize {
         let items = it.next().unwrap();
         let operation = it.next().unwrap();
         let test = it.next().unwrap();
+        max_required_worry.mul_assign(usize::from_str_radix(test.clone().split(" ").last().unwrap(), 10).unwrap());
         let target_true = it.next().unwrap();
         let target_false = it.next().unwrap();
         it.next();
@@ -180,10 +188,10 @@ fn part2(lines: &mut Lines) -> usize {
         monkeys.push(m);
     }
 
-    for _ in 0..20 {
+    for _ in 0..10000 {
         for i in 0..monkeys.len() {
             let m = monkeys.get_mut(i).unwrap();
-            let movements = m.take_turns(false);
+            let movements = m.take_turns(false, max_required_worry);
             for movement in movements.iter() {
                 monkeys.get(movement.target_index).borrow_mut().unwrap().items.borrow_mut().push(movement.item);
             }
@@ -199,6 +207,6 @@ fn part2(lines: &mut Lines) -> usize {
 fn main() {
     harness::time_function("./example.txt", &part1);
     harness::time_function("./data.txt", &part1);
-    // harness::time_function("./example.txt", &part2);
-    // harness::time_function("./data.txt", &part2);
+    harness::time_function("./example.txt", &part2);
+    harness::time_function("./data.txt", &part2);
 }

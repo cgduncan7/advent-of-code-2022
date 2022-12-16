@@ -1,4 +1,6 @@
-use std::{str::Lines, collections::HashMap, thread::sleep, time};
+use std::{str::Lines, collections::HashMap};
+// use std::thread::sleep;
+// use std::time;
 use harness;
 
 #[derive(Clone, Debug)]
@@ -280,8 +282,8 @@ fn part2(lines: &mut Lines) -> usize {
 }
 
 fn main() {
-    // harness::time_function("./example.txt", &part1);
-    // harness::time_function("./data.txt", &part1);
-    // harness::time_function("./example.txt", &part2);
+    harness::time_function("./example.txt", &part1);
+    harness::time_function("./data.txt", &part1);
+    harness::time_function("./example.txt", &part2);
     harness::time_function("./data.txt", &part2);
 }

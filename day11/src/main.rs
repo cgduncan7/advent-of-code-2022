@@ -1,4 +1,4 @@
-use std::{str::Lines, cell::RefCell, borrow::{BorrowMut, Borrow}, rc::Rc, ops::MulAssign};
+use std::{str::Lines, cell::RefCell, borrow::{BorrowMut}, ops::MulAssign};
 use harness;
 
 fn add(lhs: usize, rhs: usize) -> usize {
